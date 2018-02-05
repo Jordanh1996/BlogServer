@@ -16,6 +16,12 @@ var UserSchema = new mongoose.Schema({
             message: '{VALUE} is not a valid email'
         }
     },
+    username: {
+        type: String,
+        required: true,
+        minlength: 6,
+        unique: true
+    },
     password: {
         type: String,
         require: true,
@@ -73,8 +79,8 @@ UserSchema.statics.findByToken = function (token) {
 
 }
 
-UserSchema.statics.findByCredentials = function(email, password) {
-    return this.findOne({email}).then((user) => {
+UserSchema.statics.findByCredentials = function(username, password) {
+    return this.findOne({username}).then((user) => {
         if (!user) {
             return Promise.reject()
         }

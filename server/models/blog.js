@@ -16,6 +16,11 @@ var Blog = mongoose.model('Blog', {
     _creator: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
+    },
+    _creatorUser: {
+        type: String,
+        required: true,
+        minlength: 6
     }
 })
 

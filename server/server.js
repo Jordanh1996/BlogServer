@@ -46,7 +46,8 @@ app.post('/blog', authenticate, (req, res) => {
     var blog = new Blog({
         title: req.body.title,
         content: req.body.content,
-        _creator: req.user._id
+        _creator: req.user._id,
+        _creatorUser: req.user.username
     })
     blog.save().then((resblog) => {
         res.send(resblog)
@@ -105,7 +106,7 @@ app.patch('/blog/:id', authenticate, (req, res) => {
 // CHANGING LOG STATE
 
 app.post('/register', (req, res) => {
-    var body = _.pick(req.body, ['email', 'password'])
+    var body = _.pick(req.body, ['email','username', 'password'])
 
     var user = new User(body)
     user.save().then(() => {
@@ -118,9 +119,9 @@ app.post('/register', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-    var body = _.pick(req.body, ['email', 'password'])
+    var body = _.pick(req.body, ['username', 'password'])
 
-    User.findByCredentials(body.email, body.password).then((user) => {
+    User.findByCredentials(body.username, body.password).then((user) => {
         user.generateAuthToken().then((token) => {
             res.header('x-auth', token).send(user)
         })
