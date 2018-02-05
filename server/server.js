@@ -123,7 +123,7 @@ app.post('/login', (req, res) => {
 
     User.findByCredentials(body.username, body.password).then((user) => {
         user.generateAuthToken().then((token) => {
-            res.header('x-auth', token).send(user)
+            res.send(user)
         })
     }).catch((e) => {
         res.status(400).send()
