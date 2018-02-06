@@ -29,7 +29,7 @@ app.use(bodyParser.json())
 
 // BLOG API'S
 
-app.get('/blog/:id', (req, res) => {
+app.get('/blog/:id', ccc, (req, res) => {
     var id = req.params.id
     if (!ObjectID.isValid(id)) {
         return res.status(404).send()
@@ -45,7 +45,7 @@ app.get('/blog/:id', (req, res) => {
     })
 })
 
-app.get('/blog', (req, res) => {
+app.get('/blog', ccc, (req, res) => {
     Blog.find().then((resblog) => {
         res.send({resblog})
     }).catch((e) => {
@@ -116,7 +116,7 @@ app.patch('/blog/:id', authenticate, (req, res) => {
 
 // CHANGING LOG STATE
 
-app.post('/register', (req, res) => {
+app.post('/register', ccc, (req, res) => {
     var body = _.pick(req.body, ['email','username', 'password'])
 
     var user = new User(body)
