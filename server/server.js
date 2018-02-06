@@ -9,7 +9,7 @@ const cors = require('cors')
 var {mongoose} = require('./db/mongoose');
 var {Blog} = require('./models/blog');
 var {User} = require('./models/user');
-var {authenticate} = require('./middleware/authenticate');
+var {authenticate, ccc} = require('./middleware/authenticate');
 
 var app = express();
 var port = process.env.PORT
