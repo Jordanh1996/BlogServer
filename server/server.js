@@ -14,8 +14,6 @@ var {authenticate} = require('./middleware/authenticate');
 var app = express();
 var port = process.env.PORT
 
-app.use(bodyParser.json())
-
 var serverOptions = {
     origin: 'http://localhost:8080',
     methods: ['GET', 'POST', 'DELETE', 'PATCH'],
@@ -26,6 +24,8 @@ var serverOptions = {
 }
 
 app.options('*', cors(serverOptions))
+
+app.use(bodyParser.json())
 
 // BLOG API'S
 
