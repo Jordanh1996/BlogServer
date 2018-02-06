@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 const _ = require('lodash');
+const cors = require('cors')
 
 var {mongoose} = require('./db/mongoose');
 var {Blog} = require('./models/blog');
@@ -15,6 +16,16 @@ var port = process.env.PORT
 
 app.use(bodyParser.json())
 
+var serverOptions = {
+    origin: true,
+    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+    allowedHeaders: 'x-auth',
+    exposedHeaders: 'x-auth',
+    credentials: true,
+    preflightContinue
+}
+
+app.options('*', cors(serverOptions))
 
 // BLOG API'S
 
