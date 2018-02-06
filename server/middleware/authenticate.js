@@ -1,6 +1,7 @@
 const {User} = require('../models/user');
 
 var authenticate = (req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     var token = req.header('x-auth')
     User.findByToken(token).then((user) => {
         if (!user) {
