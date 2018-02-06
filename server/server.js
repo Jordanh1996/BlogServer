@@ -129,7 +129,7 @@ app.post('/register', (req, res) => {
     })
 })
 
-app.post('/login', (req, res) => {
+app.post('/login', ccc, (req, res) => {
     var body = _.pick(req.body, ['username', 'password'])
 
     User.findByCredentials(body.username, body.password).then((user) => {

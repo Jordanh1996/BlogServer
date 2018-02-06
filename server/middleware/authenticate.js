@@ -1,7 +1,6 @@
 const {User} = require('../models/user');
 
 var authenticate = (req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
     var token = req.header('x-auth')
     User.findByToken(token).then((user) => {
         if (!user) {
@@ -16,4 +15,9 @@ var authenticate = (req, res, next) => {
     })
 }
 
-module.exports = {authenticate}
+var ccc = (req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    next()
+}
+
+module.exports = {authenticate, ccc}
