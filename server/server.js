@@ -22,7 +22,7 @@ var serverOptions = {
     allowedHeaders: 'x-auth',
     exposedHeaders: 'x-auth',
     credentials: true,
-    preflightContinue
+    preflightContinue: true
 }
 
 app.options('*', cors(serverOptions))
