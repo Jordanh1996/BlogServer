@@ -17,7 +17,7 @@ var port = process.env.PORT
 app.use(bodyParser.json())
 
 var serverOptions = {
-    origin: true,
+    origin: '*',
     methods: ['GET', 'POST', 'DELETE', 'PATCH'],
     allowedHeaders: ['x-auth', 'Content-Type'],
     exposedHeaders: 'x-auth',
