@@ -149,6 +149,43 @@ app.delete('/logout', authenticate, (req, res) => {
     })
 })
 
+//Check for Valid Registration details
+
+app.get('/usercheck/:username', ccc, (req, res) => {
+    var username = req.params.username;
+    if (username.length < 6) {
+        return res.status(400).send()
+    }
+    User.findOne({
+      username  
+    }).then((user) => {
+        if (user) {
+            return res.send(false)
+        }
+        res.send(true)
+    }).catch((e) => {
+        res.status(400)
+    })
+})
+
+
+app.post('/emailcheck', ccc, (req, res) => {
+    var body = _.pick(req.body, ['email'])
+    if (!body.email || body.email.length < 6) {
+        return res.status(400).send()
+    }
+    User.findOne({
+      email: body.email
+    }).then((email) => {
+        if (email) {
+            return res.send(false)
+        }
+        res.send(true)
+    }).catch((e) => {
+        res.status(400)
+    })
+})
+
 
 
 app.listen(port, () => {
