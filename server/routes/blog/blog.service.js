@@ -8,12 +8,13 @@ const createBlog = (title, content, _creator, _creatorUser) => {
         title,
         content,
         _creator,
-        _creatorUser
+        _creatorUser,
+        _createdAt: new Date().getTime()
     }).save()
 }
 
-const getBlogs = () => {
-    return Blog.find()
+const getBlogs = (start, end) => {
+    return Blog.find({"index": {$gte: start, $lte: end}})
 }
 
 const getBlogById = (id) => {
@@ -52,8 +53,13 @@ const getIdByParams = (req) => {
     return id
 }
 
-const lodashBodyPicker = (body) => {
+const lodashPostPicker = (body) => {
     const lodashedbody = _.pick(body, ['title', 'content'])
+    return lodashedbody
+}
+
+const lodashBlogPicker = (body) => {
+    const lodashedbody = _.pick(body, ['start', 'end'])
     return lodashedbody
 }
 
@@ -65,5 +71,6 @@ module.exports = {
     patchBlogById,
     getIdByParams,
     validateById,
-    lodashBodyPicker
+    lodashPostPicker,
+    lodashBlogPicker
 }

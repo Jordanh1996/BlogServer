@@ -16,7 +16,8 @@ const createBlog = (req, res, next) => {
 }
 
 const getBlogs = (req, res, next) => {
-    return service.getBlogs()
+    const body = service.lodashBlogPicker(req.body)
+    return service.getBlogs(body.start, body.end)
     .then((resblog) => {
         res.send({resblog})
     }).catch((e) => {

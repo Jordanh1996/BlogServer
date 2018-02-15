@@ -5,7 +5,7 @@ const LogIn = (req, res) => {
     const body = service.lodashBodyPicker(req.body)
     User.findByCredentials(body.username, body.password).then((user) => {
         user.generateAuthToken().then((token) => {
-            res.send(user)
+            res.header('x-auth', token).send(user)
         })
     }).catch((e) => {
         res.status(400).send()

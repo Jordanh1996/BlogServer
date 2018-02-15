@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var Blog = mongoose.model('Blog', {
+var BlogSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -21,7 +21,25 @@ var Blog = mongoose.model('Blog', {
         type: String,
         required: true,
         minlength: 6
+    },
+    _createdAt: {
+        type: Number,
+        required: true,
+    },
+    index: {
+        type: Number
     }
 })
+
+BlogSchema.pre('save', function(next) {
+    Blog.count({}, (err, count) => {
+        this.index = count + 1 || 1
+        next()
+    })
+})
+
+var Blog = mongoose.model('Blog', BlogSchema)
+
+
 
 module.exports = {Blog};
