@@ -53,12 +53,12 @@ const getIdByParams = (req) => {
     return id
 }
 
-const lodashPostPicker = (body) => {
+const lodashBlogPicker = (body) => {
     const lodashedbody = _.pick(body, ['title', 'content'])
     return lodashedbody
 }
 
-const lodashBlogPicker = (body) => {
+const lodashAmountPicker = (body) => {
     const lodashedbody = _.pick(body, ['amount', 'end'])
     return lodashedbody
 }
@@ -82,7 +82,7 @@ module.exports = {
     patchBlogById,
     getIdByParams,
     validateById,
-    lodashPostPicker,
+    lodashAmountPicker,
     lodashBlogPicker,
     Count
 }

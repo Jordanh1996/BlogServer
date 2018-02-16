@@ -3,7 +3,7 @@ const service = require('./blog.service');
 
 
 const createBlog = (req, res, next) => {
-    const body = service.lodashBodyPicker(req.body)
+    const body = service.lodashBlogPicker(req.body)
     return service.createBlog(body.title, 
         body.content, 
         req.user._id, 
@@ -48,7 +48,7 @@ const getBlogs = (req, res, next) => {
     // serivce.CountBlogs().then((count) => {
     //     Blogs(res, body.amount, count)
     // })
-    const body = service.lodashBlogPicker(req.body)
+    const body = service.lodashAmountPicker(req.body)
     service.Count(body.end, body.amount, (amount, end) => {
             return service.getBlogs(amount, end)
         .then((resblog) => {
@@ -95,7 +95,7 @@ const deleteBlogById = (req, res, next) => {
 
 const patchBlogById = (req, res, next) => {
     const id = service.getIdByParams(req)
-    const body = service.lodashBodyPicker(req.body)
+    const body = service.lodashBlogPicker(req.body)
     if (service.validateById(id)) {
         return res.status(404).send()
     }
