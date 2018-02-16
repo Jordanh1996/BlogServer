@@ -49,14 +49,20 @@ const getBlogs = (req, res, next) => {
     //     Blogs(res, body.amount, count)
     // })
     const body = service.lodashAmountPicker(req.body)
-    service.Count(body.end, body.amount, (amount, end) => {
-            return service.getBlogs(amount, end)
-        .then((resblog) => {
-            res.send({resblog})
-        }).catch((e) => {
-            res.status(400).send()
-        }) 
-    })
+    // service.Count(body.skip, body.amount, (amount, skip) => {
+    //         return service.getBlogs(amount, skip)
+    //     .then((resblog) => {
+    //         res.send({resblog})
+    //     }).catch((e) => {
+    //         res.status(400).send()
+    //     }) 
+    // })
+    return service.getBlogs(body.amount, body.last)
+    .then((resblog) => {
+        res.send({resblog})
+    }).catch((e) => {
+        res.status(400).send()
+    }) 
 }
 
 const getBlogById = (req, res, next) => {

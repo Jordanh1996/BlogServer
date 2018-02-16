@@ -13,8 +13,13 @@ const createBlog = (title, content, _creator, _creatorUser) => {
     }).save()
 }
 
-const getBlogs = (amount, end) => {
-    return Blog.find({}).skip(end - amount).limit(amount)
+const getBlogs = (amount, last) => {
+    if (last) {
+        const id = new ObjectID(last)
+        return Blog.find({_id: {$lte: id}}).sort({_id: -1}).skip(1).limit(amount)
+    }
+    
+    return Blog.find({}).sort({_id: -1}).limit(amount)
 }
 
 const getBlogById = (id) => {
@@ -71,17 +76,8 @@ const lodashBlogPicker = (body) => {
 }
 
 const lodashAmountPicker = (body) => {
-    const lodashedbody = _.pick(body, ['amount', 'end'])
+    const lodashedbody = _.pick(body, ['amount', 'last'])
     return lodashedbody
-}
-
-const Count = (end, amount, callback) => {
-    if (end) {
-        return callback(amount, end)
-    }
-    Blog.count({}).then((count) => {
-        callback(amount, count)
-    })
 }
 
 
@@ -97,6 +93,5 @@ module.exports = {
     getIdByParams,
     validateById,
     lodashAmountPicker,
-    lodashBlogPicker,
-    Count
+    lodashBlogPicker
 }
