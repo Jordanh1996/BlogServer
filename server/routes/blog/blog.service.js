@@ -13,8 +13,8 @@ const createBlog = (title, content, _creator, _creatorUser) => {
     }).save()
 }
 
-const getBlogs = (start, end) => {
-    return Blog.find({"index": {$gte: start, $lte: end}})
+const getBlogs = (amount, end) => {
+    return Blog.find({"index": {$gte: end-amount + 1, $lte: end}})
 }
 
 const getBlogById = (id) => {
@@ -59,9 +59,20 @@ const lodashPostPicker = (body) => {
 }
 
 const lodashBlogPicker = (body) => {
-    const lodashedbody = _.pick(body, ['start', 'end'])
+    const lodashedbody = _.pick(body, ['amount', 'end'])
     return lodashedbody
 }
+
+const Count = (end, amount, callback) => {
+    if (end) {
+        return callback(amount, end)
+    }
+    Blog.count({}).then((count) => {
+        callback(amount, count)
+    })
+}
+
+
 
 module.exports = {
     createBlog,
@@ -72,5 +83,6 @@ module.exports = {
     getIdByParams,
     validateById,
     lodashPostPicker,
-    lodashBlogPicker
+    lodashBlogPicker,
+    Count
 }

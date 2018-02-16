@@ -16,12 +16,46 @@ const createBlog = (req, res, next) => {
 }
 
 const getBlogs = (req, res, next) => {
+    // const body = service.lodashBlogPicker(req.body)
+    // if (body.end) {
+    //     return service.getBlogs(body.amount, body.end)
+    //     .then((resblog) => {
+    //         res.send({resblog})
+    //     }).catch((e) => {
+    //         res.status(400).send()
+    //     }) 
+    // }
+    // service.CountBlogs().then((count) => {
+    //     return service.getBlogs(body.amount, count)
+    //     .then((resblog) => {
+    //         res.send({resblog})
+    //     }).catch((e) => {
+    //         res.status(400).send()
+    //     })
+    // })
+    // const body = service.lodashBlogPicker(req.body)
+    // const Blogs = (res, amount, end) => {
+    //     return service.getBlogs(res, amount, end)
+    //     .then((resblog) => {
+    //         res.send({resblog})
+    //     }).catch((e) => {
+    //         res.status(400).send()
+    //     })
+    // }
+    // if (body.end) {
+    //     return Blogs(res, body.amount, body.end)
+    // }
+    // serivce.CountBlogs().then((count) => {
+    //     Blogs(res, body.amount, count)
+    // })
     const body = service.lodashBlogPicker(req.body)
-    return service.getBlogs(body.start, body.end)
-    .then((resblog) => {
-        res.send({resblog})
-    }).catch((e) => {
-        res.status(400).send()
+    service.Count(body.end, body.amount, (amount, end) => {
+            return service.getBlogs(amount, end)
+        .then((resblog) => {
+            res.send({resblog})
+        }).catch((e) => {
+            res.status(400).send()
+        }) 
     })
 }
 
