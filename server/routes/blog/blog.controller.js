@@ -76,6 +76,24 @@ const getBlogById = (req, res, next) => {
     })
 }
 
+const getBlogsByUsername = (req, res, next) => {
+    const username = service.getIdByParams(req);
+    service.getBlogsByUsername(username).then((resblog) => {
+        res.send({resblog})
+    }).catch((e) => {
+        res.status(400).send()
+    })
+}
+
+const getBlogsByTitle = (req, res, next) => {
+    const title = service.getIdByParams(req)
+    service.getBlogsByTitle(title).then((resblog) => {
+        res.send({resblog})
+    }).catch((e) => {
+        res.status(400).send()
+    })
+}
+
 const deleteBlogById = (req, res, next) => {
     const id = service.getIdByParams(req)
     if (service.validateById(id)) {
@@ -116,6 +134,8 @@ module.exports = {
     createBlog,
     getBlogs,
     getBlogById,
+    getBlogsByUsername,
+    getBlogsByTitle,
     deleteBlogById,
     patchBlogById
 }

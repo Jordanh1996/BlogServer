@@ -21,6 +21,18 @@ const getBlogById = (id) => {
     return Blog.findById(id)
 }
 
+const getBlogsByUsername = (username) => {
+    return Blog.find({
+        _creatorUser: username
+    })
+}
+
+const getBlogsByTitle = (title) => {
+    return Blog.find({
+        title: {$regex: title}
+    })
+}
+
 const deleteBlogById = (id, userid) => {
     return Blog.findOneAndRemove({
         _id: id,
@@ -78,6 +90,8 @@ module.exports = {
     createBlog,
     getBlogs,
     getBlogById,
+    getBlogsByUsername,
+    getBlogsByTitle,
     deleteBlogById,
     patchBlogById,
     getIdByParams,
