@@ -14,7 +14,7 @@ const createBlog = (title, content, _creator, _creatorUser) => {
 }
 
 const getBlogs = (amount, end) => {
-    return Blog.find({"index": {$gte: end-amount + 1, $lte: end}})
+    return Blog.find({}).skip(end - amount).limit(amount)
 }
 
 const getBlogById = (id) => {

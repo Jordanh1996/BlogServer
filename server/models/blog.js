@@ -25,18 +25,9 @@ var BlogSchema = new mongoose.Schema({
     _createdAt: {
         type: Number,
         required: true,
-    },
-    index: {
-        type: Number
     }
 })
 
-BlogSchema.pre('save', function(next) {
-    Blog.count({}, (err, count) => {
-        this.index = count + 1 || 1
-        next()
-    })
-})
 
 var Blog = mongoose.model('Blog', BlogSchema)
 
