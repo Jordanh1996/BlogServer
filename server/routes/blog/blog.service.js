@@ -51,7 +51,9 @@ const patchBlogById = (id, userid, body) => {
         _creator: userid
         },
             {
-                $set: body
+                $set: { title: body.title,
+                    content: body.content,
+                    editTime: new Date().getTime() }
             },
                 {
                     $new: true

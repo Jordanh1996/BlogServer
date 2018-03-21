@@ -25,6 +25,9 @@ var BlogSchema = new mongoose.Schema({
     _createdAt: {
         type: Number,
         required: true,
+    },
+    editTime: {
+        type: Number
     }
 })
 
