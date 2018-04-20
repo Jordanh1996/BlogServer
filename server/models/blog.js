@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var BlogSchema = new mongoose.Schema({
+const BlogSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -29,11 +29,10 @@ var BlogSchema = new mongoose.Schema({
     editTime: {
         type: Number
     }
-})
+});
 
 
-var Blog = mongoose.model('Blog', BlogSchema)
+const Blog = mongoose.model('Blog', BlogSchema);
 
 
-
-module.exports = {Blog};
+module.exports = { Blog };

@@ -1,8 +1,8 @@
-const {User} = require('../models/user');
+const { User } = require('../models/user');
 
-var authenticate = (req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    var token = req.header('x-auth')
+const authenticate = (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    const token = req.header('x-auth');
     User.findByToken(token).then((user) => {
         if (!user) {
             return Promise.reject();
@@ -11,14 +11,9 @@ var authenticate = (req, res, next) => {
         req.user = user;
         req.token = token;
         next();
-    }).catch((e) => {
-        res.status(401).send()
-    })
-}
+    }).catch(() => {
+        res.status(401).send();
+    });
+};
 
-var ccc = (req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    next()
-}
-
-module.exports = {authenticate, ccc}
+module.exports = { authenticate };

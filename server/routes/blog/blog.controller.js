@@ -2,20 +2,20 @@
 const service = require('./blog.service');
 
 
-const createBlog = (req, res, next) => {
-    const body = service.lodashBlogPicker(req.body)
+const createBlog = (req, res) => {
+    const body = service.lodashBlogPicker(req.body);
     return service.createBlog(body.title,
         body.content,
         req.user._id,
         req.user.username)
         .then((resblog) => {
-            res.send(resblog)
-        }).catch((e) => {
-            res.status(400).send()
-        })
-}
+            res.send(resblog);
+        }).catch(() => {
+            res.status(400).send();
+    });
+};
 
-const getBlogs = (req, res, next) => {
+const getBlogs = (req, res) => {
     // const body = service.lodashBlogPicker(req.body)
     // if (body.end) {
     //     return service.getBlogs(body.amount, body.end)
@@ -48,7 +48,7 @@ const getBlogs = (req, res, next) => {
     // serivce.CountBlogs().then((count) => {
     //     Blogs(res, body.amount, count)
     // })
-    const body = service.lodashAmountPicker(req.body)
+    const body = service.lodashAmountPicker(req.body);
     // service.Count(body.skip, body.amount, (amount, skip) => {
     //         return service.getBlogs(amount, skip)
     //     .then((resblog) => {
@@ -57,84 +57,80 @@ const getBlogs = (req, res, next) => {
     //         res.status(400).send()
     //     }) 
     // })
-    return service.getBlogs(body.amount, body.last)
-        .then((resblog) => {
-            res.send({ resblog })
-        }).catch((e) => {
-            res.status(400).send()
-        })
-}
+    return service.getBlogs(body.amount, body.last).then((resblog) => {
+        res.send({ resblog });
+    }).catch(() => {
+        res.status(400).send();
+    });
+};
 
-const getBlogById = (req, res, next) => {
-    const id = service.getIdByParams(req)
+const getBlogById = (req, res) => {
+    const id = service.getIdByParams(req);
     if (service.validateById(id)) {
-        return res.status(404).send()
+        return res.status(404).send();
     }
 
-    return service.getBlogById(id)
-        .then((resblog) => {
-            if (!resblog) {
-                return res.status(404).send()
-            }
-            res.send({ resblog })
-        }).catch((e) => {
-            res.status(400).send()
-        })
-}
+    return service.getBlogById(id).then((resblog) => {
+        if (!resblog) {
+            return res.status(404).send();
+        }
+        res.send({ resblog });
+    }).catch(() => {
+        res.status(400).send();
+    });
+};
 
 const getBlogsByUsername = (req, res, next) => {
     const username = service.getIdByParams(req);
     service.getBlogsByUsername(username).then((resblog) => {
-        res.send({ resblog })
-    }).catch((e) => {
-        res.status(400).send()
-    })
-}
+        res.send({ resblog });
+    }).catch(() => {
+        res.status(400).send();
+    });
+};
 
-const getBlogsByTitle = (req, res, next) => {
-    const title = service.getIdByParams(req)
+const getBlogsByTitle = (req, res) => {
+    const title = service.getIdByParams(req);
     service.getBlogsByTitle(title).then((resblog) => {
-        res.send({ resblog })
-    }).catch((e) => {
-        res.status(400).send()
-    })
-}
+        res.send({ resblog });
+    }).catch(() => {
+        res.status(400).send();
+    });
+};
 
-const deleteBlogById = (req, res, next) => {
-    const id = service.getIdByParams(req)
+const deleteBlogById = (req, res) => {
+    const id = service.getIdByParams(req);
     if (service.validateById(id)) {
-        return res.status(404).send()
+        return res.status(404).send();
     }
 
-    return service.deleteBlogById(id, req.user._id)
-        .then((resblog) => {
-            if (!resblog) {
-                res.status(404).send()
-            }
-            res.send({ resblog })
-        }).catch((e) => {
-            res.status(400).send()
-        })
-}
+    return service.deleteBlogById(id, req.user._id).then((resblog) => {
+        if (!resblog) {
+            res.status(404).send();
+        }
+        res.send({ resblog });
+    }).catch(() => {
+        res.status(400).send();
+    });
+};
 
-const patchBlogById = (req, res, next) => {
-    const id = service.getIdByParams(req)
-    const body = service.lodashBlogPicker(req.body)
+const patchBlogById = (req, res) => {
+    const id = service.getIdByParams(req);
+    const body = service.lodashBlogPicker(req.body);
     if (service.validateById(id)) {
-        return res.status(404).send()
+        return res.status(404).send();
     }
 
-    return service.patchBlogById(id, req.user._id, body)
-        .then((resblog) => {
-            if (!resblog) {
-                return res.status(404).send()
-            }
+    return service.patchBlogById(id, req.user._id, body).then((resblog) => {
+        if (!resblog) {
+            return res.status(404).send();
+        }
 
-            res.send({ resblog })
-        }).catch((e) => {
-            res.status(400).send()
-        })
-}
+        res.send({ resblog });
+    }).catch(() => {
+        res.status(400).send();
+    });
+};
 
 module.exports = {
     createBlog,
@@ -144,4 +140,4 @@ module.exports = {
     getBlogsByTitle,
     deleteBlogById,
     patchBlogById
-}
+};

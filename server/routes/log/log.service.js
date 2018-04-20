@@ -1,11 +1,11 @@
 const _ = require('lodash');
 
 const lodashBodyPicker = (body) => {
-    var body = _.pick(body, ['username', 'password'])
-    return body
-}
+    const pickedBody = _.pick(body, ['username', 'password']);
+    return pickedBody;
+};
 
 
 module.exports = {
     lodashBodyPicker
-}
+};

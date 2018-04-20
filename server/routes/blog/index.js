@@ -1,22 +1,22 @@
+const express = require('express');
+const { authenticate } = require('../../middleware/authenticate');
+const controller = require('./blog.controller');
 
-const {authenticate, ccc} = require('../../middleware/authenticate');
-const controller = require('./blog.controller')
-var express = require('express');
-var router = express.Router()
+const router = express.Router();
 
 
-router.get('/:id', ccc, controller.getBlogById)
+router.get('/:id', controller.getBlogById);
 
-router.get('/username/:id', ccc, controller.getBlogsByUsername)
+router.get('/username/:id', controller.getBlogsByUsername);
 
-router.get('/title/:id', ccc, controller.getBlogsByTitle)
+router.get('/title/:id', controller.getBlogsByTitle);
 
-router.post('/get', ccc, controller.getBlogs)
+router.post('/get', controller.getBlogs);
 
-router.post('/', authenticate, controller.createBlog)
+router.post('/', authenticate, controller.createBlog);
 
-router.delete('/:id', authenticate, controller.deleteBlogById)
+router.delete('/:id', authenticate, controller.deleteBlogById);
 
-router.patch('/:id', authenticate, controller.patchBlogById)
+router.patch('/:id', authenticate, controller.patchBlogById);
 
-module.exports = router
+module.exports = router;

@@ -1,13 +1,13 @@
-var express = require('express');
-var router = express.Router()
-
-const {authenticate, ccc} = require('../../middleware/authenticate');
+const express = require('express');
+const { authenticate } = require('../../middleware/authenticate');
 const controller = require('./log.controller');
 
-
-router.post('/in', ccc, controller.LogIn)
-
-router.delete('/out', authenticate, controller.LogOut)
+const router = express.Router();
 
 
-module.exports = router
+router.post('/in', controller.LogIn);
+
+router.delete('/out', authenticate, controller.LogOut);
+
+
+module.exports = router;
