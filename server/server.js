@@ -19,7 +19,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-
 app.use('/blog', blogRoute);
 app.use('/log', logRoute);
 app.use('/register', registerRoute);

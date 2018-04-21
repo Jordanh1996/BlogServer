@@ -48,7 +48,7 @@ const getBlogs = (req, res) => {
     // serivce.CountBlogs().then((count) => {
     //     Blogs(res, body.amount, count)
     // })
-    const body = service.lodashAmountPicker(req.body);
+    const body = service.lodashGetBlogs(req.body);
     // service.Count(body.skip, body.amount, (amount, skip) => {
     //         return service.getBlogs(amount, skip)
     //     .then((resblog) => {
@@ -57,7 +57,7 @@ const getBlogs = (req, res) => {
     //         res.status(400).send()
     //     }) 
     // })
-    return service.getBlogs(body.amount, body.last).then((resblog) => {
+    return service.getBlogs(body.amount, body.last, body.username, body.title).then((resblog) => {
         res.send({ resblog });
     }).catch(() => {
         res.status(400).send();
@@ -74,24 +74,6 @@ const getBlogById = (req, res) => {
         if (!resblog) {
             return res.status(404).send();
         }
-        res.send({ resblog });
-    }).catch(() => {
-        res.status(400).send();
-    });
-};
-
-const getBlogsByUsername = (req, res, next) => {
-    const username = service.getIdByParams(req);
-    service.getBlogsByUsername(username).then((resblog) => {
-        res.send({ resblog });
-    }).catch(() => {
-        res.status(400).send();
-    });
-};
-
-const getBlogsByTitle = (req, res) => {
-    const title = service.getIdByParams(req);
-    service.getBlogsByTitle(title).then((resblog) => {
         res.send({ resblog });
     }).catch(() => {
         res.status(400).send();
@@ -136,8 +118,6 @@ module.exports = {
     createBlog,
     getBlogs,
     getBlogById,
-    getBlogsByUsername,
-    getBlogsByTitle,
     deleteBlogById,
     patchBlogById
 };

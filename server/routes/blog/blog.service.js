@@ -13,23 +13,28 @@ const createBlog = (title, content, _creator, _creatorUser) => {
     }).save();
 };
 
-const getBlogs = (amount, last) => {
-    if (last) {
-        const id = new ObjectID(last);
-        return Blog.find({ _id: { $lte: id } }).sort({ _id: -1 }).skip(1).limit(amount);
-    }
-    
-    return Blog.find({}).sort({ _id: -1 }).limit(amount);
+const getBlogs = (amount, last, username, title) => {
+    const query = {};
+    last ? query._id = { $lte: new ObjectID(last) } : null;
+    username ? query._creatorUser = { $regex: username } : null;
+    title ? query.title = { $regex: title } : null;
+    return Blog.find(query, null, { 
+        skip: last ? 1 : 0,
+        limit: amount,
+        sort: { _id: -1 }
+    });
 };
 
 const getBlogById = (id) => {
     return Blog.findById(id);
 };
 
-const getBlogsByUsername = (username) => {
-    return Blog.find({
-        _creatorUser: username
-    });
+const getBlogsByUsername = (username, amount, last) => {
+    if (last) {
+        const id = new ObjectID(last);
+        return Blog.find({ _id: { $lte: id } }).sort({ _id: -1 }).skip(1).limit(amount);
+    }
+    return Blog.find({ _creatorUser: username }).sort({ _id: -1 }).limit(amount);
 };
 
 const getBlogsByTitle = (title) => {
@@ -74,12 +79,12 @@ const getIdByParams = (req) => {
 };
 
 const lodashBlogPicker = (body) => {
-    const lodashedbody = _.pick(body, ['title', 'content']);
-    return lodashedbody;
+    const lodashedBody = _.pick(body, ['title', 'content']);
+    return lodashedBody;
 };
 
-const lodashAmountPicker = (body) => {
-    const lodashedbody = _.pick(body, ['amount', 'last']);
+const lodashGetBlogs = (body) => {
+    const lodashedbody = _.pick(body, ['amount', 'last', 'username', 'title']);
     return lodashedbody;
 };
 
@@ -94,6 +99,6 @@ module.exports = {
     patchBlogById,
     getIdByParams,
     validateById,
-    lodashAmountPicker,
+    lodashGetBlogs,
     lodashBlogPicker
 };
