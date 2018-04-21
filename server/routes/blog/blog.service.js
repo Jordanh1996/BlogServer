@@ -17,7 +17,7 @@ const getBlogs = (amount, last, username, title) => {
     const query = {};
     last ? query._id = { $lte: new ObjectID(last) } : null;
     username ? query._creatorUser = { $regex: username } : null;
-    title ? query.title = { $regex: title } : null;
+    title ? query.title = { $regex: new RegExp(title, 'i') } : null;
     return Blog.find(query, null, { 
         skip: last ? 1 : 0,
         limit: amount,
