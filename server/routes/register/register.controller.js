@@ -21,9 +21,9 @@ const CheckUsername = (req, res) => {
 
     service.checkUsername(username).then((user) => {
         if (user) {
-            return res.send(false);
+            return res.send({ taken: true });
         }
-        res.send(true);
+        res.send({ taken: false });
     }).catch(() => {
             res.status(400);
     });
@@ -36,9 +36,9 @@ const CheckEmail = (req, res) => {
 
     service.checkEmail(req.body.email).then((email) => {
         if (email) {
-            return res.send(false);
+            return res.send({ taken: true });
         }
-        res.send(true);
+        res.send({ taken: false });
     }).catch(() => {
         res.status(400);
     });
