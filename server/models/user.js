@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { cache } = require('../redis/actions');
 
 const UserSchema = new mongoose.Schema({
     email: {
@@ -61,7 +62,6 @@ UserSchema.methods.removeToken = function (token) {
 };
 
 UserSchema.statics.findByToken = function (token) {
-    const User = this;
     var decoded;
 
     try {
@@ -70,10 +70,17 @@ UserSchema.statics.findByToken = function (token) {
         return Promise.reject();
     }
 
-    return User.findOne({
-        '_id': decoded._id,
-        'tokens.token': token,
-        'tokens.access': 'auth'
+    const query = () => {
+        return this.findOne({
+            '_id': decoded._id,
+            'tokens.token': token,
+            'tokens.access': 'auth'
+        });
+    };
+    return new Promise((resolve, reject) => {
+        cache(token, query).then((res) => {
+            resolve(User.hydrate(res));
+        });
     });
 };
 

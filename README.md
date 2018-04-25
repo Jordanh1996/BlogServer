@@ -10,6 +10,9 @@
     <ul>Routes: Express.</ul>
     <ul>Authentication: jsonwebtoken, bcrypt.</ul>
     <ul>Database: MongoDB.</ul>
+    <ul>Cache: Redis</ul>
 
 <h2>Problems & Solutions</h2>
     <ul>Issues with the Cross-Origin-Resource Sharing permissions, solved it by using cors third party library.</ul>
+    <ul>An issue occured after attempting to log out when the user info is retrieved from redis. Solved by hydrating
+    the user object with the User model.</ul>

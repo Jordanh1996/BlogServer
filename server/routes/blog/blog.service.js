@@ -1,7 +1,7 @@
-
 const { Blog } = require('../../models/blog');
 const { ObjectID } = require('mongodb');
 const _ = require('lodash');
+const { hashCache } = require('../../redis/actions');
 
 const createBlog = (title, content, _creator, _creatorUser) => {
     return new Blog({
@@ -29,12 +29,13 @@ const getBlogById = (id) => {
     return Blog.findById(id);
 };
 
-const getBlogsByUsername = (username, amount, last) => {
-    if (last) {
-        const id = new ObjectID(last);
-        return Blog.find({ _id: { $lte: id } }).sort({ _id: -1 }).skip(1).limit(amount);
-    }
-    return Blog.find({ _creatorUser: username }).sort({ _id: -1 }).limit(amount);
+const getBlogsByUsername = (username) => {
+    const query = () => {
+        return Blog.find({
+            _creatorUser: username
+        }).sort({ _id: -1 })
+    };
+    return hashCache(username, 'blog', query);
 };
 
 const getBlogsByTitle = (title) => {
