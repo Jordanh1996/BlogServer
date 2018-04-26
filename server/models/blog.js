@@ -13,6 +13,9 @@ const BlogSchema = new mongoose.Schema({
         minlength: 1,
         trim: true
     },
+    image: {
+        type: String
+    },
     _creator: {
         type: mongoose.Schema.Types.ObjectId,
         required: true

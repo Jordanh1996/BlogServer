@@ -5,6 +5,7 @@ const createBlog = (req, res) => {
     const body = service.lodashBlogPicker(req.body);
     return service.createBlog(body.title,
         body.content,
+        body.image,
         req.user._id,
         req.user.username)
         .then((resblog) => {

@@ -3,10 +3,11 @@ const { ObjectID } = require('mongodb');
 const _ = require('lodash');
 const { hashCache } = require('../../redis/actions');
 
-const createBlog = (title, content, _creator, _creatorUser) => {
+const createBlog = (title, content, image = null, _creator, _creatorUser) => {
     return new Blog({
         title,
         content,
+        image,
         _creator,
         _creatorUser,
         _createdAt: new Date().getTime()
@@ -59,7 +60,9 @@ const patchBlogById = (id, userid, body) => {
         {
             $set: { title: body.title,
                 content: body.content,
-                editTime: new Date().getTime() 
+                image: body.image,
+                editTime: new Date().getTime()
+
             }
         },
         {
@@ -80,7 +83,7 @@ const getIdByParams = (req) => {
 };
 
 const lodashBlogPicker = (body) => {
-    const lodashedBody = _.pick(body, ['title', 'content']);
+    const lodashedBody = _.pick(body, ['title', 'content', 'image']);
     return lodashedBody;
 };
 

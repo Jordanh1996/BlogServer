@@ -9,6 +9,7 @@ const {mongoose} = require('./db/mongoose');
 const blogRoute = require('./routes/blog');
 const logRoute = require('./routes/log');
 const registerRoute = require('./routes/register');
+const uploadRoute = require('./routes/upload');
 
 const app = express();
 const port = process.env.PORT;
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 app.use('/blog', blogRoute);
 app.use('/log', logRoute);
 app.use('/register', registerRoute);
+app.use('/upload', uploadRoute);
 
 app.listen(port, () => {
     console.log(`server is up on port ${port}`);
