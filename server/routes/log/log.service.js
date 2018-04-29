@@ -6,15 +6,13 @@ const lodashBodyPicker = (body) => {
     return pickedBody;
 };
 
-// const removeToken = (id) => new Promise((resolve, reject) => {
-//     User.findById(id).then((user) => {
-//         user.update({ token: null }, { fields: ['token'] }).then(() => {
-//             resolve();
-//         });
-//     });
-// });
-
-const removeToken = (user) => user.update({ token: null }, { fields: ['token'] });
+const removeToken = (id) => new Promise((resolve, reject) => {
+    User.findById(id).then((user) => {
+        user.update({ token: null }, { fields: ['token'] }).then(() => {
+            resolve();
+        });
+    });
+});
 
 module.exports = {
     lodashBodyPicker,

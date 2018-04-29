@@ -13,10 +13,11 @@ const LogIn = (req, res) => {
 };
 
 const LogOut = (req, res) => {
-    service.removeToken(req.user).then(() => {
+    service.removeToken(req.user.id).then(() => {
         res.status(200).send();
-    }).catch(() => {
-        res.status(400).send();
+    }).catch((e) => {
+        console.log(e);
+        res.status(400).send(e);
     });
 };
 
