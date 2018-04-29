@@ -1,16 +1,15 @@
 const express = require('express');
 const { authenticate } = require('../../middleware/authenticate');
-const cleanCache = require('../../middleware/cleanCache');
+const { cleanCache } = require('../../middleware/cleanCache');
 const controller = require('./blog.controller');
 
 const router = express.Router();
 
-
-router.get('/:id', controller.getBlogById);
-
 router.post('/get', controller.getBlogs);
 
-router.get('/username/:id', authenticate, controller.getBlogsByUsername);
+router.get('/username', authenticate, controller.getBlogsByUsername);
+
+router.get('/:id', controller.getBlogById);
 
 router.post('/', authenticate, cleanCache('blog'), controller.createBlog);
 

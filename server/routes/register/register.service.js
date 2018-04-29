@@ -1,9 +1,9 @@
 const _ = require('lodash');
 
-const { User } = require('../../models/user');
+const User = require('../../models/user');
 
 const createUser = (body) => {
-    const user = new User(body);
+    const user = User.build(body);
     return user;
 };
 
@@ -24,14 +24,19 @@ const validateUsername = (username) => {
 };
 
 const checkUsername = (username) => {
-    return User.findOne({
-        username  
+    return User.findAll({
+        where: {
+            username
+        }
     });
 };
 
 const checkEmail = (email) => {
-    return User.findOne({
-        email
+    return User.findAll({
+        attributes: ['id'],
+        where: {
+            email
+        }
     });
 };
 

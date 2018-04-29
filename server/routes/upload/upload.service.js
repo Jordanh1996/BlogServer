@@ -7,9 +7,9 @@ const s3 = new AWS.S3({
 });
 
 const getSignedUrl = (userId, callback) => {
-    const key = `${userId}/${uuid()}.jpeg`
+    const key = `${userId}/${uuid()}.jpeg`;
     s3.getSignedUrl(
-        "putObject",
+        'putObject',
         {
             Bucket: 'blog-jordan',
             ContentType: 'image/jpeg',
@@ -17,7 +17,7 @@ const getSignedUrl = (userId, callback) => {
             Expires: 60 * 60
         },
         (err, url) => {
-            callback(err, url, key)
+            callback(err, url, key);
         }
     );
 };
@@ -41,7 +41,7 @@ const deleteObject = (key, callback) => {
             Key: key.toString()
         },
         (err, data) => {
-            callback(err, data)
+            callback(err, data);
         }
     );
 };

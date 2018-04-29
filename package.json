@@ -24,7 +24,9 @@
     "lodash": "^4.17.5",
     "mongodb": "^3.0.2",
     "mongoose": "^4.11.1",
+    "mysql2": "^1.5.3",
     "redis": "^2.8.0",
+    "sequelize": "^4.37.6",
     "uuid": "^3.2.1",
     "validator": "^9.4.0"
   },

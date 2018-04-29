@@ -1,13 +1,19 @@
 const client = require('../redis/client');
 
-const cleanCache = (key) => {
-    return async (req, res, next) => {
-        await next();
-        if (key) {
-            return client.hdel(req.user.username, key)
-        }
-        client.del(req.user.username);
-    };
+const cleanCache = (key) => async (req, res, next) => {
+    await next();
+    if (key) {
+        return client.hdel(req.user.id, key);
+    }
+    client.del(req.user.id);
 };
 
-module.exports = cleanCache;
+const cleanTokenCache = async (req, res, next) => {
+    await next();
+    client.del(req.user.token);
+};
+
+module.exports = {
+    cleanCache,
+    cleanTokenCache
+};

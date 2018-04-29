@@ -1,91 +1,94 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
+const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const sequelize = require('../db/mysql');
 const { cache } = require('../redis/actions');
 
-const UserSchema = new mongoose.Schema({
-    email: {
-        type: String,
-        required: true,
-        minlength: 1,
-        trim: true,
-        unique: true,
-        validate: {
-            validator: validator.isEmail,
-            message: '{VALUE} is not a valid email'
-        }
-    },
+const User = sequelize.define('user', {
     username: {
-        type: String,
-        required: true,
-        minlength: 6,
-        unique: true
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
+        validate: {
+            len: {
+                args: [6, 32],
+                msg: 'String length is not in this range'
+            }
+        }
     },
     password: {
-        type: String,
-        require: true,
-        minlength: 6
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            len: {
+                args: [6, 32],
+                msg: 'String length is not in this range'
+            }
+        }
     },
-    tokens: [{
-        access: {
-            type: String,
-            required: true
-        },
-        token: {
-            type: String,
-            required: true
-        }
-    }]
-});
-
-UserSchema.methods.generateAuthToken = function () {
-    const user = this;
-    const access = 'auth';
-    const token = jwt.sign({ _id: user._id.toHexString(), access }, process.env.JWT_SECRET).toString();
-
-    user.tokens = [{ access, token }];
-
-    return user.save().then(() => {
-        return token;
-    });
-};
-
-UserSchema.methods.removeToken = function (token) {
-    const user = this;
-
-    return user.update({
-        $pull: {
-            tokens: { token }
-        }
-    });
-};
-
-UserSchema.statics.findByToken = function (token) {
-    var decoded;
-
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (e) {
-        return Promise.reject();
+    email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
+    },
+    token: {
+        type: Sequelize.STRING,
+        allowNull: true
     }
+}, {
+        timestamps: false
+    });
 
-    const query = () => {
-        return this.findOne({
-            '_id': decoded._id,
-            'tokens.token': token,
-            'tokens.access': 'auth'
-        });
-    };
+// Hashing password
+
+User.beforeCreate((user) => new Promise((resolve, reject) => {
+    bcrypt.hash(user.password, 10, (err, hash) => {
+        if (err) {
+            console.log('an error occured trying to hash given password', err);
+            reject();
+        }
+        user.password = hash;
+        resolve();
+    });
+}));
+
+// Instance Methods
+
+User.prototype.generateAuthToken = function () {
+    const access = 'auth';
+    this.token = jwt.sign({ username: this.username, access }, process.env.JWT_SECRET).toString();
+
+    return this.save().then(() => this.token);
+};
+
+// Class Methods
+
+User.findByToken = function (token) {
     return new Promise((resolve, reject) => {
-        cache(token, query).then((res) => {
-            resolve(User.hydrate(res));
+        jwt.verify(token, process.env.JWT_SECRET, (err, { username }) => {
+            if (err) {
+                reject();
+            }
+            const query = () => User.findOne({
+                where: {
+                    token,
+                    username,
+                },
+            });
+            cache(token, query, User)
+                .then((user) => {
+                    resolve(user);
+                });
         });
     });
 };
 
-UserSchema.statics.findByCredentials = function (username, password) {
-    return this.findOne({ username }).then((user) => {
+User.findByCredentials = function (username, password) {
+    return User.findOne({
+        where: {
+            username
+        }
+    }).then((user) => {
         if (!user) {
             return Promise.reject();
         }
@@ -101,21 +104,4 @@ UserSchema.statics.findByCredentials = function (username, password) {
     });
 };
 
-UserSchema.pre('save', function (next) {
-    const user = this;
-
-    if (user.isModified('password')) {
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(user.password, salt, (err, hash) => {
-                user.password = hash;
-                next();
-            });
-        });
-    } else {
-        next();
-    }
-});
-
-const User = mongoose.model('User', UserSchema);
-
-module.exports = { User };
+module.exports = User;

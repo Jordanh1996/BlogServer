@@ -1,81 +1,68 @@
-const { Blog } = require('../../models/blog');
-const { ObjectID } = require('mongodb');
+const { Blog } = require('../../models');
 const _ = require('lodash');
 const { hashCache } = require('../../redis/actions');
+const Sequelize = require('sequelize');
 
-const createBlog = (title, content, image = null, _creator, _creatorUser) => {
-    return new Blog({
+const createBlog = (title, content, image = null, user) => new Promise((resolve) => {
+    Blog.build({
         title,
         content,
         image,
-        _creator,
-        _creatorUser,
-        _createdAt: new Date().getTime()
-    }).save();
-};
-
-const getBlogs = (amount, last, username, title) => {
-    const query = {};
-    last ? query._id = { $lte: new ObjectID(last) } : null;
-    username ? query._creatorUser = { $regex: username } : null;
-    title ? query.title = { $regex: new RegExp(title, 'i') } : null;
-    return Blog.find(query, null, { 
-        skip: last ? 1 : 0,
-        limit: amount,
-        sort: { _id: -1 }
+        creatorUsername: user.username,
+        createdAt: new Date(),
+        edited: false
+    }).save().then((blog) => {
+        blog.setUser(user).then((res) => {
+            resolve(res.dataValues);
+        });
     });
-};
+});
 
-const getBlogById = (id) => {
-    return Blog.findById(id);
-};
-
-const getBlogsByUsername = (username) => {
-    const query = () => {
-        return Blog.find({
-            _creatorUser: username
-        }).sort({ _id: -1 })
+const getBlogs = (limit, last, username, title) => {
+    const where = {
+        title: { [Sequelize.Op.like]: title ? `%${title}%` : '%' },
+        creatorUsername: { [Sequelize.Op.like]: username ? `%${username}%` : '%' }
     };
-    return hashCache(username, 'blog', query);
-};
-
-const getBlogsByTitle = (title) => {
-    return Blog.find({
-        title: { $regex: title }
+    last ? where.id = { [Sequelize.Op.lt]: last } : null;
+    return Blog.findAll({
+        limit,
+        where,
+        order: [['updatedAt', 'DESC']]
     });
 };
 
-const deleteBlogById = (id, userid) => {
-    return Blog.findOneAndRemove({
-        _id: id,
-        _creator: userid
+const getBlogById = (id) => Blog.findById(id);
+
+const getBlogsByUsername = (userId) => {
+    const query = () => Blog.findAll({
+        where: {
+            userId
+        },
+        order: [['updatedAt', 'DESC']]
     });
+    return hashCache(userId, 'blog', query, Blog);
 };
 
-const patchBlogById = (id, userid, body) => {
-    return Blog.findOneAndUpdate({
-        _id: id,
-        _creator: userid
-        },
-        {
-            $set: { title: body.title,
-                content: body.content,
-                image: body.image,
-                editTime: new Date().getTime()
-
-            }
-        },
-        {
-            $new: true
-        }
-    );
-};
-
-const validateById = (id) => {
-    if (!ObjectID.isValid(id)) {
-        return true;
+const deleteBlogById = (id, userId) => Blog.destroy({
+    where: {
+        id,
+        userId
     }
-};
+});
+
+const patchBlogById = (id, userId, body) => Blog.update(
+    {
+        title: body.title,
+        content: body.content,
+        image: body.image,
+        edited: true
+    }, {
+        where: {
+            id,
+            userId
+        }
+    }
+);
 
 const getIdByParams = (req) => {
     const id = req.params.id;
@@ -98,11 +85,9 @@ module.exports = {
     getBlogs,
     getBlogById,
     getBlogsByUsername,
-    getBlogsByTitle,
     deleteBlogById,
     patchBlogById,
     getIdByParams,
-    validateById,
     lodashGetBlogs,
     lodashBlogPicker
 };

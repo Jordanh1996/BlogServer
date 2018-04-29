@@ -6,13 +6,12 @@ const createBlog = (req, res) => {
     return service.createBlog(body.title,
         body.content,
         body.image,
-        req.user._id,
-        req.user.username)
+        req.user)
         .then((resblog) => {
             res.send(resblog);
         }).catch(() => {
             res.status(400).send();
-    });
+        });
 };
 
 const getBlogs = (req, res) => {
@@ -26,9 +25,6 @@ const getBlogs = (req, res) => {
 
 const getBlogById = (req, res) => {
     const id = service.getIdByParams(req);
-    if (service.validateById(id)) {
-        return res.status(404).send();
-    }
 
     return service.getBlogById(id).then((resblog) => {
         if (!resblog) {
@@ -42,11 +38,8 @@ const getBlogById = (req, res) => {
 
 const deleteBlogById = (req, res) => {
     const id = service.getIdByParams(req);
-    if (service.validateById(id)) {
-        return res.status(404).send();
-    }
 
-    return service.deleteBlogById(id, req.user._id).then((resblog) => {
+    return service.deleteBlogById(id, req.user.id).then((resblog) => {
         if (!resblog) {
             res.status(404).send();
         }
@@ -59,11 +52,8 @@ const deleteBlogById = (req, res) => {
 const patchBlogById = (req, res) => {
     const id = service.getIdByParams(req);
     const body = service.lodashBlogPicker(req.body);
-    if (service.validateById(id)) {
-        return res.status(404).send();
-    }
 
-    return service.patchBlogById(id, req.user._id, body).then((resblog) => {
+    return service.patchBlogById(id, req.user.id, body).then((resblog) => {
         if (!resblog) {
             return res.status(404).send();
         }
@@ -74,18 +64,22 @@ const patchBlogById = (req, res) => {
     });
 };
 
-const getBlogsByUsername = (req, res) => {
-    const username = service.getIdByParams(req);
-    return service.getBlogsByUsername(username)
+const getBlogsByUsername = (req, res) => service.getBlogsByUsername(req.user.id)
     .then((resblog) => {
         res.send({ resblog });
     }).catch(() => {
         res.status(400).send();
     });
+
+const get2 = (req, res) => {
+    res.send({
+        asd: 'asd'
+    });
 };
 
 module.exports = {
     createBlog,
+    get2,
     getBlogs,
     getBlogById,
     getBlogsByUsername,

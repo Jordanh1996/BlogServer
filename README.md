@@ -14,5 +14,4 @@
 
 <h2>Problems & Solutions</h2>
     <ul>Issues with the Cross-Origin-Resource Sharing permissions, solved it by using cors third party library.</ul>
-    <ul>An issue occured after attempting to log out when the user info is retrieved from redis. Solved by hydrating
-    the user object with the User model.</ul>
+    <ul>Had issues after retrieving data from redis. The data was regular objects while data that comes from the MySQL database are models. Solved by turning the regular objects to model instances.</ul>

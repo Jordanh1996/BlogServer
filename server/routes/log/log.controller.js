@@ -1,5 +1,5 @@
 const service = require('./log.service');
-const { User } = require('../../models/user');
+const { User } = require('../../models');
 
 const LogIn = (req, res) => {
     const body = service.lodashBodyPicker(req.body);
@@ -13,7 +13,7 @@ const LogIn = (req, res) => {
 };
 
 const LogOut = (req, res) => {
-    req.user.removeToken(req.token).then(() => {
+    service.removeToken(req.user).then(() => {
         res.status(200).send();
     }).catch(() => {
         res.status(400).send();

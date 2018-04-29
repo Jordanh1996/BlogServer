@@ -1,41 +1,37 @@
-const mongoose = require('mongoose');
+const Sequelize = require('sequelize');
+const sequelize = require('../db/mysql');
 
-const BlogSchema = new mongoose.Schema({
+const Blog = sequelize.define('blog', {
     title: {
-        type: String,
-        required: true,
-        minlength: 1,
-        trim: true
+        type: Sequelize.STRING,
+        allowNull: false
     },
     content: {
-        type: String,
-        required: true,
-        minlength: 1,
-        trim: true
+        type: Sequelize.TEXT,
+        allowNull: false
     },
     image: {
-        type: String
+        type: Sequelize.STRING,
+        allowNull: true
     },
-    _creator: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
+    creatorUsername: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            len: {
+                args: [6, 32],
+                msg: 'String length is not in this range'
+            }
+        }
     },
-    _creatorUser: {
-        type: String,
-        required: true,
-        minlength: 6
+    createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
     },
-    _createdAt: {
-        type: Number,
-        required: true,
-    },
-    editTime: {
-        type: Number
+    edited: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
     }
 });
 
-
-const Blog = mongoose.model('Blog', BlogSchema);
-
-
-module.exports = { Blog };
+module.exports = Blog;

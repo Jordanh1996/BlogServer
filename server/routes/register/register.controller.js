@@ -7,7 +7,9 @@ const Register = (req, res) => {
     user.save().then(() => {
         return user.generateAuthToken();
     }).then((token) => {
-        res.header('x-auth', token).send(user);
+        res.header('x-auth', token).send({
+            created: true
+        });
     }).catch(() => {
         res.status(400).send();
     });
@@ -20,7 +22,7 @@ const CheckUsername = (req, res) => {
     }
 
     service.checkUsername(username).then((user) => {
-        if (user) {
+        if (user.length > 0) {
             return res.send({ taken: true });
         }
         res.send({ taken: false });
@@ -35,7 +37,8 @@ const CheckEmail = (req, res) => {
     }
 
     service.checkEmail(req.body.email).then((email) => {
-        if (email) {
+        console.log(email)
+        if (email.length > 0) {
             return res.send({ taken: true });
         }
         res.send({ taken: false });
