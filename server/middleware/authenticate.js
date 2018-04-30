@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const { User } = require('../models/index');
 
 const authenticate = (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

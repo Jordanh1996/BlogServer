@@ -1,33 +1,61 @@
 const _ = require('lodash');
-const { Blog } = require('../../models/blog');
+const { Message } = require('../../models');
 
-const lodashAddMessage = (body) => {
-    return _.pick(body, ['blogID', 'content'])
-};
 
-const addMessage = (content, blogID, userID, username) => {
-    return new Promise((resolve, reject) => {
-        console.log(blogID)
-        Blog.findById(blogID).then((blog) => {
-            const message = {
-                content,
-                _creator: userID,
-                _creatorUser: username,
-                _createdAt: new Date().getTime()
-            };
-            console.log(message);
-            blog.messages.push(message);
-            console.log('pushed')
-            blog.save().then((res) => {
-                console.log(res);
-                resolve(message);
-            });
-        });
+const lodashAddMessage = (body) => _.pick(body, ['blogId', 'content']);
+
+const lodashEditMessage = (body) => _.pick(body, ['content']);
+
+const addMessage = (content, user, blogID) => new Promise((resolve, reject) => {
+    Message.build({
+        content,
+        creatorUsername: user.username,
+        createdAt: new Date(),
+        edited: false
+    }).save().then((message) => {
+        message.setBlog(blogID);
+        message.setUser(user.id);
+        resolve(message);
     });
-};
+});
 
+const removeMessage = (userId, messageId) => Message.destroy({
+    where: {
+        userId,
+        id: messageId
+    }
+});
+
+const updateMessage = (content, userId, messageId) => Message.update(
+    {
+        content,
+        edited: true
+    }, {
+        where: {
+            userId,
+            id: messageId
+        }
+    }
+);
+
+const getMessagesByUsername = (username) => Message.findAll({
+    where: {
+        creatorUsername: username
+    }
+});
+
+const getMessagesByBlogId = (blogId) => Message.findAll({
+    where: {
+        blogId
+    }
+});
 
 module.exports = {
     lodashAddMessage,
-    addMessage
+    lodashEditMessage,
+    addMessage,
+    removeMessage,
+    updateMessage,
+    getMessagesByUsername,
+    getMessagesByBlogId
 };

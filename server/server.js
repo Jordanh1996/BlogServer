@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 
 app.use('/blog', blogRoute);
-// app.use('/message', messageRoute);
+app.use('/message', messageRoute);
 app.use('/log', logRoute);
 app.use('/register', registerRoute);
 app.use('/upload', uploadRoute);

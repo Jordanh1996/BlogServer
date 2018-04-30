@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const User = require('../../models/user');
+const { User } = require('../../models');
 
 const lodashBodyPicker = (body) => {
     const pickedBody = _.pick(body, ['username', 'password']);

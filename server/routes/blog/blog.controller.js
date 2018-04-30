@@ -40,10 +40,12 @@ const deleteBlogById = (req, res) => {
     const id = service.getIdByParams(req);
 
     return service.deleteBlogById(id, req.user.id).then((resblog) => {
-        if (!resblog) {
+        if (resblog < 1) {
             res.status(404).send();
         }
-        res.send({ resblog });
+        res.send({
+            deleted: true
+        });
     }).catch(() => {
         res.status(400).send();
     });
@@ -64,22 +66,14 @@ const patchBlogById = (req, res) => {
     });
 };
 
-const getBlogsByUsername = (req, res) => service.getBlogsByUsername(req.user.id)
-    .then((resblog) => {
-        res.send({ resblog });
-    }).catch(() => {
-        res.status(400).send();
-    });
-
-const get2 = (req, res) => {
-    res.send({
-        asd: 'asd'
-    });
-};
+const getBlogsByUsername = (req, res) => service.getBlogsByUsername(req.user.id).then((resblog) => {
+    res.send({ resblog });
+}).catch(() => {
+    res.status(400).send();
+});
 
 module.exports = {
     createBlog,
-    get2,
     getBlogs,
     getBlogById,
     getBlogsByUsername,

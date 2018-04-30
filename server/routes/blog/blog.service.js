@@ -1,4 +1,4 @@
-const { Blog } = require('../../models');
+const { Blog, Message } = require('../../models');
 const _ = require('lodash');
 const { hashCache } = require('../../redis/actions');
 const Sequelize = require('sequelize');
@@ -43,12 +43,20 @@ const getBlogsByUsername = (userId) => {
     return hashCache(userId, 'blog', query, Blog);
 };
 
-const deleteBlogById = (id, userId) => Blog.destroy({
-    where: {
-        id,
-        userId
-    }
-});
+const deleteBlogById = (id, userId) => {
+    const deleteBlog = Blog.destroy({
+        where: {
+            id,
+            userId
+        }
+    });
+    const deleteMessages = Message.destroy({
+        where: {
+            blogId: null
+        }
+    });
+    return Promise.all([deleteMessages, deleteBlog]);
+};
 
 const patchBlogById = (id, userId, body) => Blog.update(
     {
